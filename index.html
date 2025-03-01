@@ -1,96 +1,168 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>我的單曲</title>
-  <style>
-    /* 全域樣式 */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      color: white;
-    }
-    
-    /* 中央容器 */
-    .container {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      max-width: 400px;
-      width: 90%;
-    }
-
-    /* 標題 */
-    h1 {
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-
-    /* 專輯圖片動畫 */
-    .album-art {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      background: url('album.jpg') center/cover;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      animation: none;
-    }
-
-    /* 旋轉動畫 */
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    /* 播放時添加旋轉動畫 */
-    .playing {
-      animation: spin 5s linear infinite;
-    }
-
-    /* 音樂播放器 */
-    audio {
-      width: 100%;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舞台的光芒</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #C0C0C0, #FFFFFF);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .player-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .album-cover {
+            width: 100%;
+            border-radius: 10px;
+            transition: transform 0.5s linear;
+        }
+        .playing .album-cover {
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .lyrics {
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            display: none;
+            text-align: left;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .toggle-btn, .play-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            background: #ff4500;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+        .toggle-btn:hover, .play-btn:hover {
+            background: #e03e00;
+        }
+        .progress-container {
+            width: 100%;
+            background: #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            height: 10px;
+            margin-top: 10px;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ff4500;
+            border-radius: 5px;
+        }
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎵 我的單曲 🎵</h1>
-    <div class="album-art" id="albumArt"></div>
-    <audio id="audioPlayer" controls>
-      <source src="your-music.mp3" type="audio/mpeg">
-      您的瀏覽器不支援 audio 元件。
-    </audio>
-  </div>
+    <h1>舞台的光芒</h1>
+    <div class="player-container">
+        <img src="BREEZE.jpg" class="album-cover" id="cover" onerror="this.onerror=null; this.src='default.jpg';">
+        <audio id="audio" src="舞台的光芒.mp3"></audio>
+        <br><br>
+        <button class="play-btn" onclick="togglePlay()">▶</button>
+        <button class="toggle-btn" onclick="toggleLyrics()">顯示 / 隱藏 歌詞</button>
+        <div class="progress-container" onclick="setProgress(event)">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="time-display">
+            <span id="current-time">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+        <div class="lyrics" id="lyrics">
+            <p>(Verse 1)</p>
+            <p>晨光灑落屏東的操場，青春在這裡綻放，</p>
+            <p>舞台的燈光照亮希望，每一步都閃耀光芒。</p>
+            <p>(Pre-Chorus)</p>
+            <p>排練的汗水 滲透了夢想，</p>
+            <p>一句台詞 傳遞著心腸，</p>
+            <p>掌聲響起那一刻，世界為我們鼓掌！</p>
+            <p>(Chorus)</p>
+            <p>微風輕輕吹過，夢想乘風閃爍，</p>
+            <p>大同高中綻放戲劇的火，</p>
+            <p>角色變換之間，故事悄然重播，</p>
+            <p>舞台上 我們是最閃耀的光！</p>
+            <p>(Outro)</p>
+            <p>青春如戲 唯愛不變，</p>
+            <p>微風帶我們飛向明天！</p>
+        </div>
+    </div>
+    <script>
+        const audio = document.getElementById("audio");
+        const cover = document.getElementById("cover");
+        const lyricsContainer = document.getElementById("lyrics");
+        const playButton = document.querySelector(".play-btn");
+        const progressBar = document.getElementById("progress-bar");
+        const currentTimeDisplay = document.getElementById("current-time");
+        const durationDisplay = document.getElementById("duration");
+        let playing = false;
 
-  <script>
-    const audio = document.getElementById("audioPlayer");
-    const albumArt = document.getElementById("albumArt");
+        function togglePlay() {
+            if (playing) {
+                audio.pause();
+                cover.classList.remove("playing");
+                playButton.innerHTML = "▶";
+            } else {
+                audio.play();
+                cover.classList.add("playing");
+                playButton.innerHTML = "⏸️";
+            }
+            playing = !playing;
+        }
 
-    // 監聽播放事件，開始旋轉
-    audio.addEventListener("play", function() {
-      albumArt.classList.add("playing");
-    });
+        function toggleLyrics() {
+            lyricsContainer.style.display = lyricsContainer.style.display === "none" || lyricsContainer.style.display === "" ? "block" : "none";
+        }
 
-    // 監聽暫停或結束事件，停止旋轉
-    audio.addEventListener("pause", function() {
-      albumArt.classList.remove("playing");
-    });
+        audio.addEventListener("timeupdate", () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            durationDisplay.textContent = formatTime(audio.duration);
+        });
 
-    audio.addEventListener("ended", function() {
-      albumArt.classList.remove("playing");
-    });
-  </script>
+        function setProgress(event) {
+            const width = event.currentTarget.clientWidth;
+            const clickX = event.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+    </script>
 </body>
 </html>
